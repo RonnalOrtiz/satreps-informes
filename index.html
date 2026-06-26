@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SATREPS – Repositorio de Informes</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;background:#f5f7f0;color:#333}
+  header{background:linear-gradient(135deg,#1b5e20,#388e3c);
+         color:#fff;padding:32px;text-align:center}
+  header h1{font-size:1.8rem}
+  header p{opacity:.85;margin-top:8px}
+  nav{display:flex;justify-content:center;gap:12px;padding:20px;
+      flex-wrap:wrap}
+  .nav-btn{padding:10px 24px;border-radius:24px;border:2px solid #2d7a45;
+           color:#2d7a45;background:#fff;cursor:pointer;font-size:.9rem;
+           font-weight:600;transition:.2s}
+  .nav-btn.active,.nav-btn:hover{background:#2d7a45;color:#fff}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px 40px}
+  h2{color:#2d7a45;margin:28px 0 16px;font-size:1.15rem;
+     border-bottom:2px solid #c8e6c9;padding-bottom:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .card{background:#fff;border-radius:12px;padding:20px;
+        box-shadow:0 2px 8px rgba(0,0,0,.08);text-align:center;
+        border:1px solid #e8f5e9;transition:.2s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
+  .card .icon{font-size:2.2rem;margin-bottom:8px}
+  .card h3{font-size:1rem;color:#1b5e20;margin-bottom:4px}
+  .card .sub{font-size:.8rem;color:#888;margin-bottom:12px}
+  .card a{display:inline-block;padding:7px 18px;background:#2d7a45;
+          color:#fff;border-radius:20px;font-size:.82rem;font-weight:600;
+          text-decoration:none}
+  .card a.open{background:#1565c0}
+  .card .qr{margin-top:12px}
+  .card .qr img{width:90px;border:1px solid #eee;border-radius:6px}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+  footer{text-align:center;color:#888;font-size:.8rem;padding:20px;
+         border-top:1px solid #e0e0e0}
+</style>
+</head>
+<body>
+<header>
+  <div style="font-size:3rem">🐄🌿</div>
+  <h1>Repositorio SATREPS</h1>
+  <p>Informes de Ganadería Sostenible – Córdoba · 2023</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showTab('fincas')">🏡 Por Finca</button>
+  <button class="nav-btn" onclick="showTab('municipios')">🗺 Por Municipio</button>
+</nav>
+
+<div class="container">
+  <!-- ── FINCAS ── -->
+  <div id="tab-fincas" class="tab-content active">
+    
+    <h2>📍 Costanera</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Alto Bonito</h3>
+        <div class="sub">Los Cordobas</div>
+        <a href="fincas/alto_bonito.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_alto_bonito.png" alt="QR Alto Bonito"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>La Florida</h3>
+        <div class="sub">Puerto Escondido</div>
+        <a href="fincas/la_florida.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_la_florida.png" alt="QR La Florida"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Miranda</h3>
+        <div class="sub">San Bernardo</div>
+        <a href="fincas/miranda.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_miranda.png" alt="QR Miranda"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Palmira</h3>
+        <div class="sub">Canalete</div>
+        <a href="fincas/palmira.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_palmira.png" alt="QR Palmira"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>San Pedro (liverpool)</h3>
+        <div class="sub">San Antero</div>
+        <a href="fincas/san_pedro__liverpool.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_san_pedro__liverpool.png" alt="QR San Pedro (liverpool)"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Bajo Sinú</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Cadiz</h3>
+        <div class="sub">Lorica</div>
+        <a href="fincas/cadiz.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_cadiz.png" alt="QR Cadiz"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Canáan</h3>
+        <div class="sub">Lorica</div>
+        <a href="fincas/canaan.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_canaan.png" alt="QR Canáan"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>El Premio</h3>
+        <div class="sub">Momil</div>
+        <a href="fincas/el_premio.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_el_premio.png" alt="QR El Premio"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Guayacan</h3>
+        <div class="sub">Momil</div>
+        <a href="fincas/guayacan.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_guayacan.png" alt="QR Guayacan"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Villa Gladys</h3>
+        <div class="sub">Lorica</div>
+        <a href="fincas/villa_gladys.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_villa_gladys.png" alt="QR Villa Gladys"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Sinú medio</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>La Vega</h3>
+        <div class="sub">Montería</div>
+        <a href="fincas/la_vega.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_la_vega.png" alt="QR La Vega"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Rancho Alegre</h3>
+        <div class="sub">Montería</div>
+        <a href="fincas/rancho_alegre.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_rancho_alegre.png" alt="QR Rancho Alegre"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Santa Cruz</h3>
+        <div class="sub">Montería</div>
+        <a href="fincas/santa_cruz.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_santa_cruz.png" alt="QR Santa Cruz"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Santa Maria</h3>
+        <div class="sub">Montería</div>
+        <a href="fincas/santa_maria.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_santa_maria.png" alt="QR Santa Maria"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Sabana</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Aurora</h3>
+        <div class="sub">Sahagún</div>
+        <a href="fincas/aurora.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_aurora.png" alt="QR Aurora"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Carrizal</h3>
+        <div class="sub">Chinu</div>
+        <a href="fincas/carrizal.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_carrizal.png" alt="QR Carrizal"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Las Marias</h3>
+        <div class="sub">Sahagún</div>
+        <a href="fincas/las_marias.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_las_marias.png" alt="QR Las Marias"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Providencia</h3>
+        <div class="sub">Sahagún</div>
+        <a href="fincas/providencia.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_providencia.png" alt="QR Providencia"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 San Jorge</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>El Dorado</h3>
+        <div class="sub">Ayapel</div>
+        <a href="fincas/el_dorado.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_el_dorado.png" alt="QR El Dorado"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Montevideo</h3>
+        <div class="sub">Planeta Rica</div>
+        <a href="fincas/montevideo.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_montevideo.png" alt="QR Montevideo"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Peralonso</h3>
+        <div class="sub">Pueblo Nuevo</div>
+        <a href="fincas/peralonso.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_peralonso.png" alt="QR Peralonso"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Tequendama</h3>
+        <div class="sub">Planeta Rica</div>
+        <a href="fincas/tequendama.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_tequendama.png" alt="QR Tequendama"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Alto Sinú</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Damasco</h3>
+        <div class="sub">Valencia</div>
+        <a href="fincas/damasco.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_damasco.png" alt="QR Damasco"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>El Danubio</h3>
+        <div class="sub">Tierralta</div>
+        <a href="fincas/el_danubio.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_el_danubio.png" alt="QR El Danubio"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Inglaterra</h3>
+        <div class="sub">Valencia</div>
+        <a href="fincas/inglaterra.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_inglaterra.png" alt="QR Inglaterra"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>La Esperanza</h3>
+        <div class="sub">Valencia</div>
+        <a href="fincas/la_esperanza.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_la_esperanza.png" alt="QR La Esperanza"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Los Alpes</h3>
+        <div class="sub">Valencia</div>
+        <a href="fincas/los_alpes.html">Acceder</a>
+        
+        <div class="qr"><img src="qr/finca_los_alpes.png" alt="QR Los Alpes"></div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+
+  <!-- ── MUNICIPIOS ── -->
+  <div id="tab-municipios" class="tab-content">
+    
+    <h2>📍 Costanera</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Canalete</h3>
+        <div class="sub">1 finca(s)</div>
+        <a href="municipios/canalete.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_canalete.png" alt="QR Canalete"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Los Córdobas</h3>
+        <div class="sub">0 finca(s)</div>
+        <a href="municipios/los_cordobas.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_los_cordobas.png" alt="QR Los Córdobas"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Puerto Escondido</h3>
+        <div class="sub">1 finca(s)</div>
+        <a href="municipios/puerto_escondido.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_puerto_escondido.png" alt="QR Puerto Escondido"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>San Antero</h3>
+        <div class="sub">1 finca(s)</div>
+        <a href="municipios/san_antero.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_san_antero.png" alt="QR San Antero"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>San Bernardo del Viento</h3>
+        <div class="sub">0 finca(s)</div>
+        <a href="municipios/san_bernardo_del_viento.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_san_bernardo_del_viento.png" alt="QR San Bernardo del Viento"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Bajo Sinú</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Lorica</h3>
+        <div class="sub">3 finca(s)</div>
+        <a href="municipios/lorica.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_lorica.png" alt="QR Lorica"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Momil</h3>
+        <div class="sub">2 finca(s)</div>
+        <a href="municipios/momil.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_momil.png" alt="QR Momil"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Sinú medio</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Cereté</h3>
+        <div class="sub">0 finca(s)</div>
+        <a href="municipios/cerete.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_cerete.png" alt="QR Cereté"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Montería</h3>
+        <div class="sub">4 finca(s)</div>
+        <a href="municipios/monteria.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_monteria.png" alt="QR Montería"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Sabana</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Sahagún</h3>
+        <div class="sub">3 finca(s)</div>
+        <a href="municipios/sahagun.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_sahagun.png" alt="QR Sahagún"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 San Jorge</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Ayapel</h3>
+        <div class="sub">1 finca(s)</div>
+        <a href="municipios/ayapel.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_ayapel.png" alt="QR Ayapel"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Montelíbano</h3>
+        <div class="sub">0 finca(s)</div>
+        <a href="municipios/montelibano.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_montelibano.png" alt="QR Montelíbano"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Planeta Rica</h3>
+        <div class="sub">2 finca(s)</div>
+        <a href="municipios/planeta_rica.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_planeta_rica.png" alt="QR Planeta Rica"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Pueblo Nuevo</h3>
+        <div class="sub">1 finca(s)</div>
+        <a href="municipios/pueblo_nuevo.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_pueblo_nuevo.png" alt="QR Pueblo Nuevo"></div>
+        
+      </div>
+      
+    </div>
+    
+    <h2>📍 Alto Sinú</h2>
+    <div class="grid">
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Tierralta</h3>
+        <div class="sub">1 finca(s)</div>
+        <a href="municipios/tierralta.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_tierralta.png" alt="QR Tierralta"></div>
+        
+      </div>
+      
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>Valencia</h3>
+        <div class="sub">4 finca(s)</div>
+        <a href="municipios/valencia.html" class="open">Ver informe</a>
+        
+        <div class="qr"><img src="qr/muni_valencia.png" alt="QR Valencia"></div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+<footer>SATREPS · Ganadería Sostenible Córdoba · 2023</footer>
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

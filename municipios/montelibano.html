@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informe Municipal – Montelíbano</title>
+<style>
+  :root{--verde:#2d7a45;--bg:#f5f7f0;--gris:#546e7a;--border:#c8e6c9}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;background:var(--bg);color:#333}
+  header{background:linear-gradient(135deg,#1b5e20,#388e3c);color:#fff;padding:24px 32px}
+  header h1{font-size:1.5rem}
+  header .meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.85rem;opacity:.85}
+  header .meta span{background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px}
+  .container{max-width:1100px;margin:0 auto;padding:24px 20px}
+  .section{background:#fff;border-radius:12px;padding:24px;margin-bottom:24px;
+           box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:4px solid var(--verde)}
+  .section h2{color:var(--verde);font-size:1.1rem;margin-bottom:14px}
+  .table-wrap{overflow-x:auto;border-radius:8px;border:1px solid #e0e0e0}
+  table.tabla-calidad{width:100%;border-collapse:collapse;font-size:.82rem}
+  table.tabla-calidad th{background:var(--verde);color:#fff;padding:8px 10px;text-align:left;white-space:nowrap}
+  table.tabla-calidad td{padding:7px 10px;border-bottom:1px solid #f0f0f0}
+  table.tabla-calidad tr:nth-child(even) td{background:#f9faf7}
+  table.tabla-calidad tr:hover td{background:#e8f5e9}
+  .badge{padding:3px 10px;border-radius:12px;color:#fff;font-size:.75rem;font-weight:600}
+  .sin-datos{color:#888;font-style:italic;padding:16px}
+  .plotly-chart{width:100%;min-height:320px}
+  .fincas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;
+               margin-top:16px}
+  .finca-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;
+              padding:14px;text-align:center}
+  .finca-card h4{color:var(--verde);margin-bottom:4px}
+  .finca-card .lock{font-size:1.2rem}
+  a{color:#1565c0;text-decoration:none}
+  footer{text-align:center;padding:20px;color:#888;font-size:.8rem;border-top:1px solid #e0e0e0}
+</style>
+</head>
+<body>
+<header>
+  <h1>🗺 Informe Municipal: Montelíbano</h1>
+  <div class="meta">
+    <span>📍 Región: San Jorge</span>
+    <span>🏡 Fincas: 0</span>
+    <span>📅 2023</span>
+  </div>
+</header>
+<div class="container">
+
+  <div class="section">
+    <h2>🌾 Calidad de Forraje – Montelíbano</h2>
+    <p style="color:#555;font-size:.88rem;margin-bottom:16px">
+      Resumen de composición bromatológica de los forrajes del municipio.
+    </p>
+    <div class="table-wrap"><table class="dataframe tabla-calidad table table-hover table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Nombre común</th>
+      <th>Nombre científico</th>
+      <th>MS (%MH)</th>
+      <th>PC (%MS)</th>
+      <th>FDN (%MS)</th>
+      <th>FDA (%MS)</th>
+      <th>Lig (%MS)</th>
+      <th>ENm (Mcal/kg)</th>
+      <th>ENg (Mcal/kg)</th>
+      <th>Calidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Brachipara</td>
+      <td>Urochloa plantaginea</td>
+      <td>26.64</td>
+      <td>9.85</td>
+      <td>65.25</td>
+      <td>34.17</td>
+      <td>7.98</td>
+      <td>0.99</td>
+      <td>0.44</td>
+      <td><span class="badge" style="background:#c62828">Baja</span></td>
+    </tr>
+    <tr>
+      <td>Brachiaria Brizantha</td>
+      <td>Urochloa brizantha</td>
+      <td>30.02</td>
+      <td>5.21</td>
+      <td>71.17</td>
+      <td>37.08</td>
+      <td>9.45</td>
+      <td>0.80</td>
+      <td>0.27</td>
+      <td><span class="badge" style="background:#c62828">Baja</span></td>
+    </tr>
+    <tr>
+      <td>Humidicola</td>
+      <td>Urochloa humidicola cv. Comun</td>
+      <td>25.47</td>
+      <td>6.80</td>
+      <td>69.76</td>
+      <td>34.64</td>
+      <td>8.12</td>
+      <td>0.89</td>
+      <td>0.34</td>
+      <td><span class="badge" style="background:#c62828">Baja</span></td>
+    </tr>
+    <tr>
+      <td>Brachiaria decumbens</td>
+      <td>Urochloa decumbens cv. Basilisk</td>
+      <td>29.30</td>
+      <td>7.41</td>
+      <td>68.23</td>
+      <td>34.43</td>
+      <td>8.42</td>
+      <td>0.91</td>
+      <td>0.36</td>
+      <td><span class="badge" style="background:#c62828">Baja</span></td>
+    </tr>
+  </tbody>
+</table></div>
+    <div class="plotly-chart" id="chart-calidad"></div>
+  </div>
+
+  <div class="section">
+    <h2>🦠 Microbioma Ruminal – Promedio Municipal</h2>
+    <div class="plotly-chart" id="chart-micro"></div>
+    <div style="margin-top:14px">
+      <div class="table-wrap"><p class='sin-datos'>Sin información funcional disponible.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🏡 Fincas en este Municipio</h2>
+    <div class="fincas-grid">
+    </div>
+  </div>
+
+</div>
+<footer>
+  Proyecto SATREPS · Ganadería Sostenible Córdoba · 2023 ·
+  Datos de acceso libre – Informe Municipal
+</footer>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+const cal = {"data": [{"fill": "toself", "line": {"color": "rgb(102,194,165)", "width": 2}, "name": "Brachipara (<i>Urochloa plantaginea</i>)", "opacity": 0.45, "r": [9.85, 65.25, 34.17, 7.98, 51.64, 9.85], "theta": ["PC (%)", "FDN (%)", "FDA (%)", "Lig (%)", "NDT (%)", "PC (%)"], "type": "scatterpolar"}, {"fill": "toself", "line": {"color": "rgb(252,141,98)", "width": 2}, "name": "Brachiaria Brizantha (<i>Urochloa brizantha</i>)", "opacity": 0.45, "r": [5.21, 71.17, 37.08, 9.45, 47.36, 5.21], "theta": ["PC (%)", "FDN (%)", "FDA (%)", "Lig (%)", "NDT (%)", "PC (%)"], "type": "scatterpolar"}, {"fill": "toself", "line": {"color": "rgb(141,160,203)", "width": 2}, "name": "Humidicola (<i>Urochloa humidicola cv. Comun</i>)", "opacity": 0.45, "r": [6.8, 69.76, 34.64, 8.12, 49.25, 6.8], "theta": ["PC (%)", "FDN (%)", "FDA (%)", "Lig (%)", "NDT (%)", "PC (%)"], "type": "scatterpolar"}, {"fill": "toself", "line": {"color": "rgb(231,138,195)", "width": 2}, "name": "Brachiaria decumbens (<i>Urochloa decumbens cv. Basilisk</i>)", "opacity": 0.45, "r": [7.41, 68.23, 34.43, 8.42, 49.76, 7.41], "theta": ["PC (%)", "FDN (%)", "FDA (%)", "Lig (%)", "NDT (%)", "PC (%)"], "type": "scatterpolar"}], "layout": {"template": {"data": {"histogram2dcontour": [{"type": "histogram2dcontour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "choropleth": [{"type": "choropleth", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "histogram2d": [{"type": "histogram2d", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmap": [{"type": "heatmap", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmapgl": [{"type": "heatmapgl", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "contourcarpet": [{"type": "contourcarpet", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "contour": [{"type": "contour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "surface": [{"type": "surface", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "mesh3d": [{"type": "mesh3d", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "scatter": [{"fillpattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}, "type": "scatter"}], "parcoords": [{"type": "parcoords", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolargl": [{"type": "scatterpolargl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "bar"}], "scattergeo": [{"type": "scattergeo", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolar": [{"type": "scatterpolar", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "histogram": [{"marker": {"pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "histogram"}], "scattergl": [{"type": "scattergl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatter3d": [{"type": "scatter3d", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattermapbox": [{"type": "scattermapbox", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterternary": [{"type": "scatterternary", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattercarpet": [{"type": "scattercarpet", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "barpolar"}], "pie": [{"automargin": true, "type": "pie"}]}, "layout": {"autotypenumbers": "strict", "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "hovermode": "closest", "hoverlabel": {"align": "left"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"bgcolor": "#E5ECF6", "angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "ternary": {"bgcolor": "#E5ECF6", "aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]]}, "xaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "yaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "geo": {"bgcolor": "white", "landcolor": "#E5ECF6", "subunitcolor": "white", "showland": true, "showlakes": true, "lakecolor": "white"}, "title": {"x": 0.05}, "mapbox": {"style": "light"}}}, "polar": {"radialaxis": {"visible": true, "range": [0, 100]}}, "margin": {"l": 40, "r": 40, "t": 40, "b": 40}, "font": {"family": "Arial", "size": 11}, "showlegend": true, "height": 380, "paper_bgcolor": "white"}};
+if (cal) Plotly.newPlot("chart-calidad", cal.data, cal.layout, {responsive:true});
+const micro = {};
+if (micro) Plotly.newPlot("chart-micro", micro.data, micro.layout, {responsive:true});
+</script>
+</body>
+</html>

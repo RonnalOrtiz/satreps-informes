@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informe Finca El Danubio</title>
+<style>
+  :root {
+    --verde:#2d7a45; --verde-c:#4caf50; --azul:#1565c0;
+    --naranja:#e65100; --gris:#546e7a; --bg:#f5f7f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;background:var(--bg);color:#333}
+  /* ── GATE ── */
+  #gate{display:flex;align-items:center;justify-content:center;
+        min-height:100vh;background:linear-gradient(135deg,#1b5e20,#388e3c)}
+  .gate-box{background:#fff;padding:48px 40px;border-radius:16px;
+            box-shadow:0 8px 32px rgba(0,0,0,.25);max-width:380px;width:90%;text-align:center}
+  .gate-box img{width:72px;margin-bottom:20px}
+  .gate-box h2{color:var(--verde);margin-bottom:6px;font-size:1.4rem}
+  .gate-box p{color:#666;font-size:.9rem;margin-bottom:24px}
+  .gate-box input{width:100%;padding:12px 14px;border:2px solid #c8e6c9;
+                  border-radius:8px;font-size:1rem;outline:none;
+                  transition:border .2s}
+  .gate-box input:focus{border-color:var(--verde)}
+  .btn-unlock{width:100%;margin-top:14px;padding:12px;border:none;
+              border-radius:8px;background:var(--verde);color:#fff;
+              font-size:1rem;font-weight:600;cursor:pointer;
+              transition:background .2s}
+  .btn-unlock:hover{background:#1b5e20}
+  .error{color:#c62828;font-size:.85rem;margin-top:10px;min-height:20px}
+  /* ── INFORME ── */
+  #content{display:none}
+  header{background:linear-gradient(135deg,#1b5e20,#388e3c);
+         color:#fff;padding:24px 32px}
+  header h1{font-size:1.6rem;font-weight:700}
+  header .sub{font-size:.95rem;opacity:.85;margin-top:4px}
+  header .meta{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;
+               font-size:.85rem;opacity:.8}
+  header .meta span{background:rgba(255,255,255,.15);
+                    padding:4px 10px;border-radius:20px}
+  .container{max-width:1100px;margin:0 auto;padding:24px 20px}
+  .section{background:#fff;border-radius:12px;padding:24px;
+           margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.08);
+           border-left:4px solid var(--verde)}
+  .section h2{color:var(--verde);font-size:1.15rem;margin-bottom:16px;
+              display:flex;align-items:center;gap:8px}
+  .section h2 .icon{font-size:1.2rem}
+  .subsec{margin-top:20px}
+  .subsec h3{font-size:1rem;color:var(--gris);margin-bottom:12px;
+             border-bottom:1px solid #e0e0e0;padding-bottom:6px}
+  /* Tabla */
+  .table-wrap{overflow-x:auto;border-radius:8px;border:1px solid #e0e0e0}
+  table.tabla-calidad{width:100%;border-collapse:collapse;font-size:.82rem}
+  table.tabla-calidad th{background:var(--verde);color:#fff;padding:8px 10px;
+                          text-align:left;white-space:nowrap}
+  table.tabla-calidad td{padding:7px 10px;border-bottom:1px solid #f0f0f0}
+  table.tabla-calidad tr:nth-child(even) td{background:#f9faf7}
+  table.tabla-calidad tr:hover td{background:#e8f5e9}
+  .badge{padding:3px 10px;border-radius:12px;color:#fff;font-size:.75rem;
+         font-weight:600}
+  .sin-datos{color:#888;font-style:italic;padding:16px}
+  /* KPI cards */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;
+            margin-bottom:20px}
+  .kpi{background:var(--bg);border-radius:10px;padding:14px 16px;
+       border:1px solid var(--border)}
+  .kpi .label{font-size:.75rem;color:var(--gris);text-transform:uppercase;
+              letter-spacing:.5px;margin-bottom:4px}
+  .kpi .valor{font-size:1.4rem;font-weight:700;color:var(--verde)}
+  .kpi .unit{font-size:.75rem;color:#888}
+  /* Footer */
+  footer{text-align:center;padding:20px;color:#888;font-size:.8rem;
+         border-top:1px solid #e0e0e0;margin-top:12px}
+  a{color:var(--azul)}
+  .plotly-chart{width:100%;min-height:300px}
+</style>
+</head>
+<body>
+
+<!-- ── PUERTA DE ACCESO ── -->
+<div id="gate">
+  <div class="gate-box">
+    <div style="font-size:56px;margin-bottom:12px">🐄</div>
+    <h2>Informe Finca El Danubio</h2>
+    <p>Acceso restringido al propietario.<br>Ingrese la clave para continuar.</p>
+    <input type="password" id="pwd" placeholder="Contraseña"
+           onkeydown="if(event.key==='Enter')checkPwd()">
+    <button class="btn-unlock" onclick="checkPwd()">Ingresar</button>
+    <div class="error" id="err-msg"></div>
+  </div>
+</div>
+
+<!-- ── CONTENIDO DEL INFORME ── -->
+<div id="content">
+  <header>
+    <h1>🌿 Informe de Finca: El Danubio</h1>
+    <div class="sub">Proyecto SATREPS – Ganadería Sostenible Sostenible Córdoba</div>
+    <div class="meta">
+      <span>📍 Municipio: Tierralta</span>
+      <span>🗺 Región: Alto Sinú</span>
+      <span>📅 Muestreo: 2023</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ── 1. CALIDAD DE FORRAJE ── -->
+    <div class="section">
+      <h2><span class="icon">🌾</span> Calidad de Forraje</h2>
+      <p style="color:#555;font-size:.88rem;margin-bottom:16px">
+        Composición bromatológica de los forrajes evaluados en el municipio de <strong>Tierralta</strong>.
+        La calidad energética se clasifica según la Energía Neta de Mantenimiento (ENm):
+        <span style="color:#2d7a45;font-weight:600">Alta (&gt;1.55)</span>,
+        <span style="color:#e65100;font-weight:600">Media (1.30–1.55)</span>,
+        <span style="color:#c62828;font-weight:600">Baja (&lt;1.30 Mcal kg⁻¹ MS)</span>.
+      </p>
+      <div class="table-wrap"><table class="dataframe tabla-calidad table table-hover table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Nombre común</th>
+      <th>Nombre científico</th>
+      <th>MS (%MH)</th>
+      <th>PC (%MS)</th>
+      <th>FDN (%MS)</th>
+      <th>FDA (%MS)</th>
+      <th>Lig (%MS)</th>
+      <th>ENm (Mcal/kg)</th>
+      <th>ENg (Mcal/kg)</th>
+      <th>Calidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Brachipara</td>
+      <td>Urochloa plantaginea</td>
+      <td>22.41</td>
+      <td>16.01</td>
+      <td>58.92</td>
+      <td>34.53</td>
+      <td>7.02</td>
+      <td>1.18</td>
+      <td>0.61</td>
+      <td><span class="badge" style="background:#c62828">Baja</span></td>
+    </tr>
+    <tr>
+      <td>Angleton</td>
+      <td>Dichanthium aristatum</td>
+      <td>32.14</td>
+      <td>11.55</td>
+      <td>60.55</td>
+      <td>34.15</td>
+      <td>7.26</td>
+      <td>1.04</td>
+      <td>0.49</td>
+      <td><span class="badge" style="background:#c62828">Baja</span></td>
+    </tr>
+  </tbody>
+</table></div>
+      <div class="plotly-chart" id="chart-calidad"></div>
+    </div>
+
+    <!-- ── 2. MICROBIOMA RUMINAL ── -->
+    <div class="section">
+      <h2><span class="icon">🦠</span> Composición Microbioma Ruminal (Nivel Familia)</h2>
+      <p style="color:#555;font-size:.88rem;margin-bottom:16px">
+        Abundancia relativa de las principales familias bacterianas identificadas
+        en el rumen de los animales de la finca. Se presentan las
+        <strong>15 familias</strong> con mayor representación.
+      </p>
+      <div class="plotly-chart" id="chart-micro"></div>
+      <div class="subsec">
+        <h3>Funcionalidad teórica de las familias identificadas</h3>
+        <div class="table-wrap"><table class="dataframe tabla-calidad table table-hover table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Familia</th>
+      <th>Hospedero</th>
+      <th>Función teórica</th>
+      <th>Referencia</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Acidaminococcaceae</td>
+      <td>Ganado</td>
+      <td>fermentan aminoácidos para producir acetato y butirato</td>
+      <td><a href="https://link.springer.com/article/10.1186/s40168-025-02309-1" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Christensenellaceae</td>
+      <td>Yaks</td>
+      <td>mejora y el rumen se vuelve más propicio para la absorción y digestión de nutrientes.</td>
+      <td><a href="https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2021.682989/full" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>F082</td>
+      <td>ovejas</td>
+      <td>es un potencial degradador de fibra</td>
+      <td><a href="https://www.frontiersin.org/journals/microbiomes/articles/10.3389/frmbi.2023.1272625/full" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Gastranaerophilales</td>
+      <td>Ganado</td>
+      <td>un biomarcador microbiano temprano que refleja los cambios de la flora en el tracto gastrointestinal, está relacionado con la respuesta inflamatoria.</td>
+      <td><a href="https://www.mdpi.com/2076-2615/14/19/2823" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Hungateiclostridiaceae</td>
+      <td>In vitro</td>
+      <td>pueden fermentar carbohidratos complejos y sustratos proteicos para producir AGV</td>
+      <td><a href="https://link.springer.com/article/10.1186/s13765-024-00935-1" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Lachnospiraceae</td>
+      <td>Ganado</td>
+      <td>taxones clave que regulan la biohidrogenación ruminal y la proporción de ácidos grasos poliinsaturados ω-6/ω-3 en la leche de vacas lecheras.</td>
+      <td><a href="https://link.springer.com/article/10.1186/s40168-026-02397-7" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Oscillospiraceae</td>
+      <td>Ganado</td>
+      <td>asociadas con la digestión de carbohidratos y la producción de ácidos grasos de cadena corta</td>
+      <td><a href="https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2025.1658831/full" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Prevotellaceae</td>
+      <td>Rumiantes</td>
+      <td>es fundamental para el metabolismo de carbohidratos e hidrógeno y la alta abundancia de Prevotella en rumiantes se asocia con un microbioma saludable</td>
+      <td><a href="https://www.mdpi.com/2076-2607/11/1/1" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Rikenellaceae</td>
+      <td>Yaks</td>
+      <td>juega un papel importante en la digestión de la fibra cruda</td>
+      <td><a href="https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2021.682989/full" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Ruminococcaceae</td>
+      <td>Cordero</td>
+      <td>participan en la degradación de la fibra</td>
+      <td><a href="https://link.springer.com/article/10.1186/s12866-020-1716-z" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Selenomonadaceae</td>
+      <td>Ganado</td>
+      <td>alta correlación con la actividad antimetanogénica</td>
+      <td><a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0268157" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>Spirochaetaceae</td>
+      <td>Ganado</td>
+      <td>comunidades adheridas al paquete fibroso del rumen</td>
+      <td><a href="https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2022.897996/full" target="_blank">Ver fuente</a></td>
+    </tr>
+    <tr>
+      <td>WCHB1-41</td>
+      <td>Cordero</td>
+      <td>participa en la degradación de mucinas, produciendo ácidos grasos de cadena corta</td>
+      <td><a href="https://www.mdpi.com/2076-2615/15/11/1565" target="_blank">Ver fuente</a></td>
+    </tr>
+  </tbody>
+</table></div>
+      </div>
+    </div>
+
+    <!-- ── 3. CURVAS GOMPERTZ ── -->
+    <div class="section">
+      <h2><span class="icon">📈</span> Parametrización de Crecimiento (Gompertz)</h2>
+      <p style="color:#555;font-size:.88rem;margin-bottom:16px">
+        Curvas de crecimiento individual ajustadas al modelo de Gompertz:
+        <em>y(t) = b₀ · exp(−exp(b₁ − b₂·t))</em>.
+        El punto marcado (○) indica el punto de inflexión donde se alcanza
+        la tasa máxima de crecimiento (TMC).
+      </p>
+      <div class="kpi-grid"></div>
+      <div class="plotly-chart" id="chart-curvas"></div>
+      <div class="subsec">
+        <h3>Parámetros estadísticos por animal</h3>
+        <div class="table-wrap"><p class='sin-datos'>Sin parámetros de curva disponibles.</p></div>
+      </div>
+    </div>
+
+  </div>
+  <footer>
+    Proyecto SATREPS · Ganadería Sostenible Córdoba · 2023 ·
+    Generado con datos del Laboratorio de Nutrición Animal AGROSAVIA
+  </footer>
+</div>
+
+<!-- ── PLOTLY ── -->
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+const HASH = "d1afbcddce357a0d48ed931b9e7b0e3642e8715e4fde497e8c37ee1e591adb7b";
+const FINCA_KEY = "unlocked_el_danubio";
+
+async function checkPwd() {
+  const pwd = document.getElementById("pwd").value;
+  if (!pwd) return;
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest("SHA-256", enc.encode(pwd));
+  const hex = Array.from(new Uint8Array(buf))
+                   .map(b=>b.toString(16).padStart(2,"0")).join("");
+  if (hex === HASH) {
+    document.getElementById("gate").style.display = "none";
+    document.getElementById("content").style.display = "block";
+    sessionStorage.setItem(FINCA_KEY, "1");
+    renderCharts();
+  } else {
+    document.getElementById("err-msg").textContent =
+      "Contraseña incorrecta. Por favor intente nuevamente.";
+  }
+}
+
+// Auto-restaurar sesión
+if (sessionStorage.getItem(FINCA_KEY) === "1") {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("content").style.display = "block";
+}
+
+function renderCharts() {
+  // Calidad chart (radar)
+  const calidad_data = {"data": [{"fill": "toself", "line": {"color": "rgb(102,194,165)", "width": 2}, "name": "Brachipara (<i>Urochloa plantaginea</i>)", "opacity": 0.45, "r": [16.01, 58.92, 34.53, 7.02, 56.08, 16.01], "theta": ["PC (%)", "FDN (%)", "FDA (%)", "Lig (%)", "NDT (%)", "PC (%)"], "type": "scatterpolar"}, {"fill": "toself", "line": {"color": "rgb(252,141,98)", "width": 2}, "name": "Angleton (<i>Dichanthium aristatum</i>)", "opacity": 0.45, "r": [11.55, 60.55, 34.15, 7.26, 52.9, 11.55], "theta": ["PC (%)", "FDN (%)", "FDA (%)", "Lig (%)", "NDT (%)", "PC (%)"], "type": "scatterpolar"}], "layout": {"template": {"data": {"histogram2dcontour": [{"type": "histogram2dcontour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "choropleth": [{"type": "choropleth", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "histogram2d": [{"type": "histogram2d", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmap": [{"type": "heatmap", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmapgl": [{"type": "heatmapgl", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "contourcarpet": [{"type": "contourcarpet", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "contour": [{"type": "contour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "surface": [{"type": "surface", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "mesh3d": [{"type": "mesh3d", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "scatter": [{"fillpattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}, "type": "scatter"}], "parcoords": [{"type": "parcoords", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolargl": [{"type": "scatterpolargl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "bar"}], "scattergeo": [{"type": "scattergeo", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolar": [{"type": "scatterpolar", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "histogram": [{"marker": {"pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "histogram"}], "scattergl": [{"type": "scattergl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatter3d": [{"type": "scatter3d", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattermapbox": [{"type": "scattermapbox", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterternary": [{"type": "scatterternary", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattercarpet": [{"type": "scattercarpet", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "barpolar"}], "pie": [{"automargin": true, "type": "pie"}]}, "layout": {"autotypenumbers": "strict", "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "hovermode": "closest", "hoverlabel": {"align": "left"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"bgcolor": "#E5ECF6", "angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "ternary": {"bgcolor": "#E5ECF6", "aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]]}, "xaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "yaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "geo": {"bgcolor": "white", "landcolor": "#E5ECF6", "subunitcolor": "white", "showland": true, "showlakes": true, "lakecolor": "white"}, "title": {"x": 0.05}, "mapbox": {"style": "light"}}}, "polar": {"radialaxis": {"visible": true, "range": [0, 100]}}, "margin": {"l": 40, "r": 40, "t": 40, "b": 40}, "font": {"family": "Arial", "size": 11}, "showlegend": true, "height": 380, "paper_bgcolor": "white"}};
+  if (calidad_data) Plotly.newPlot("chart-calidad", calidad_data.data, calidad_data.layout, {responsive:true});
+
+  // Microbioma
+  const micro_data = {"data": [{"hovertemplate": "<b>Familia: Prevotellaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>es fundamental para el metabolismo de carbohidratos e hidr\u00f3geno y la alta\u2026</i><extra></extra>", "marker": {"color": "rgb(102,194,165)"}, "name": "Prevotellaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [33.1726676, 32.006072, 32.759478400000006, 33.5026413, 44.8214642, 37.777837399999996], "type": "bar"}, {"hovertemplate": "<b>Familia: Other</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>Sin informaci\u00f3n</i><extra></extra>", "marker": {"color": "rgb(252,141,98)"}, "name": "Other", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [17.320498, 22.3673975, 20.455430999999997, 16.529958399999998, 15.7282862, 12.988065500000001], "type": "bar"}, {"hovertemplate": "<b>Familia: F082</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>es un potencial degradador de fibra</i><extra></extra>", "marker": {"color": "rgb(141,160,203)"}, "name": "F082", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [9.8013399, 8.3914253, 10.3718315, 11.3969132, 5.9723793999999994, 14.730626299999999], "type": "bar"}, {"hovertemplate": "<b>Familia: Lachnospiraceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>taxones clave que regulan la biohidrogenaci\u00f3n ruminal y la proporci\u00f3n de \u00e1cidos\u2026</i><extra></extra>", "marker": {"color": "rgb(231,138,195)"}, "name": "Lachnospiraceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [8.956752900000001, 10.8906156, 10.6894608, 11.9845835, 11.3199667, 8.7126125], "type": "bar"}, {"hovertemplate": "<b>Familia: Spirochaetaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>comunidades adheridas al paquete fibroso del rumen</i><extra></extra>", "marker": {"color": "rgb(166,216,84)"}, "name": "Spirochaetaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [8.9093929, 2.6072519, 2.5794769, 5.1291893, 5.9103161, 6.9079748], "type": "bar"}, {"hovertemplate": "<b>Familia: Christensenellaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>mejora y el rumen se vuelve m\u00e1s propicio para la absorci\u00f3n y digesti\u00f3n de\u2026</i><extra></extra>", "marker": {"color": "rgb(255,217,47)"}, "name": "Christensenellaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [5.4398519, 7.7472932, 5.993557, 8.0545711, 4.4856905000000005, 5.4698592], "type": "bar"}, {"hovertemplate": "<b>Familia: Rikenellaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>juega un papel importante en la digesti\u00f3n de la fibra cruda</i><extra></extra>", "marker": {"color": "rgb(229,196,148)"}, "name": "Rikenellaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [6.711854600000001, 5.9588276, 6.5312306, 4.6601748, 4.8945092, 3.6903204], "type": "bar"}, {"hovertemplate": "<b>Familia: Oscillospiraceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>asociadas con la digesti\u00f3n de carbohidratos y la producci\u00f3n de \u00e1cidos grasos de\u2026</i><extra></extra>", "marker": {"color": "rgb(179,179,179)"}, "name": "Oscillospiraceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [3.2584362, 2.6122464, 3.5403664, 3.7813858999999996, 2.5004992, 3.5943311], "type": "bar"}, {"hovertemplate": "<b>Familia: Acidaminococcaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>fermentan amino\u00e1cidos para producir acetato y butirato</i><extra></extra>", "marker": {"color": "rgb(251,180,174)"}, "name": "Acidaminococcaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [0.0, 2.7283294, 3.468004, 1.619292, 0.0, 1.4310266], "type": "bar"}, {"hovertemplate": "<b>Familia: Selenomonadaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>alta correlaci\u00f3n con la actividad antimetanog\u00e9nica</i><extra></extra>", "marker": {"color": "rgb(179,205,227)"}, "name": "Selenomonadaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [2.4820343, 0.0, 0.0, 0.0, 0.0, 0.0], "type": "bar"}, {"hovertemplate": "<b>Familia: WCHB1-41</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>participa en la degradaci\u00f3n de mucinas, produciendo \u00e1cidos grasos de cadena\u2026</i><extra></extra>", "marker": {"color": "rgb(204,235,197)"}, "name": "WCHB1-41", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [0.0, 2.4519701, 0.0, 1.9696508000000001, 1.2188020000000002, 3.1465725], "type": "bar"}, {"hovertemplate": "<b>Familia: Ruminococcaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>participan en la degradaci\u00f3n de la fibra</i><extra></extra>", "marker": {"color": "rgb(222,203,228)"}, "name": "Ruminococcaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [1.8678655999999998, 0.0, 0.0, 1.3716397, 1.8219633999999998, 1.5507738], "type": "bar"}, {"hovertemplate": "<b>Familia: Gastranaerophilales</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>un biomarcador microbiano temprano que refleja los cambios de la flora en el\u2026</i><extra></extra>", "marker": {"color": "rgb(254,217,166)"}, "name": "Gastranaerophilales", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [2.0793062, 0.0, 0.0, 0.0, 1.3261231, 0.0], "type": "bar"}, {"hovertemplate": "<b>Familia: Bacteroidales_UCG-001</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>Sin informaci\u00f3n</i><extra></extra>", "marker": {"color": "rgb(255,255,204)"}, "name": "Bacteroidales_UCG-001", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [0.0, 2.238571, 2.0251042, 0.0, 0.0, 0.0], "type": "bar"}, {"hovertemplate": "<b>Familia: Hungateiclostridiaceae</b><br>Animal: %{x}<br>Abundancia: %{y:.1f}%<br><i>pueden fermentar carbohidratos complejos y sustratos proteicos para producir AGV</i><extra></extra>", "marker": {"color": "rgb(229,216,189)"}, "name": "Hungateiclostridiaceae", "x": ["Animal 1", "Animal 2", "Animal 3", "Animal 4", "Animal 5", "Animal 6"], "y": [0.0, 0.0, 1.5860591, 0.0, 0.0, 0.0], "type": "bar"}], "layout": {"template": {"data": {"histogram2dcontour": [{"type": "histogram2dcontour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "choropleth": [{"type": "choropleth", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "histogram2d": [{"type": "histogram2d", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmap": [{"type": "heatmap", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmapgl": [{"type": "heatmapgl", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "contourcarpet": [{"type": "contourcarpet", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "contour": [{"type": "contour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "surface": [{"type": "surface", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "mesh3d": [{"type": "mesh3d", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "scatter": [{"fillpattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}, "type": "scatter"}], "parcoords": [{"type": "parcoords", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolargl": [{"type": "scatterpolargl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "bar"}], "scattergeo": [{"type": "scattergeo", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolar": [{"type": "scatterpolar", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "histogram": [{"marker": {"pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "histogram"}], "scattergl": [{"type": "scattergl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatter3d": [{"type": "scatter3d", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattermapbox": [{"type": "scattermapbox", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterternary": [{"type": "scatterternary", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattercarpet": [{"type": "scattercarpet", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "barpolar"}], "pie": [{"automargin": true, "type": "pie"}]}, "layout": {"autotypenumbers": "strict", "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "hovermode": "closest", "hoverlabel": {"align": "left"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"bgcolor": "#E5ECF6", "angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "ternary": {"bgcolor": "#E5ECF6", "aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]]}, "xaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "yaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "geo": {"bgcolor": "white", "landcolor": "#E5ECF6", "subunitcolor": "white", "showland": true, "showlakes": true, "lakecolor": "white"}, "title": {"x": 0.05}, "mapbox": {"style": "light"}}}, "margin": {"l": 60, "r": 20, "t": 30, "b": 50}, "xaxis": {"title": {"text": "Animal"}, "gridcolor": "#e0e0e0"}, "yaxis": {"title": {"text": "Abundancia relativa (%)"}, "gridcolor": "#e0e0e0", "range": [0, 100]}, "font": {"family": "Arial", "size": 12}, "barmode": "stack", "legend": {"title": {"text": "Familia"}}, "height": 420, "paper_bgcolor": "white", "plot_bgcolor": "#fafafa", "hovermode": "x unified"}};
+  if (micro_data) Plotly.newPlot("chart-micro", micro_data.data, micro_data.layout, {responsive:true});
+
+  // Curvas
+  const curvas_data = {"data": [], "layout": {"template": {"data": {"histogram2dcontour": [{"type": "histogram2dcontour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "choropleth": [{"type": "choropleth", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "histogram2d": [{"type": "histogram2d", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmap": [{"type": "heatmap", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "heatmapgl": [{"type": "heatmapgl", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "contourcarpet": [{"type": "contourcarpet", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "contour": [{"type": "contour", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "surface": [{"type": "surface", "colorbar": {"outlinewidth": 0, "ticks": ""}, "colorscale": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]]}], "mesh3d": [{"type": "mesh3d", "colorbar": {"outlinewidth": 0, "ticks": ""}}], "scatter": [{"fillpattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}, "type": "scatter"}], "parcoords": [{"type": "parcoords", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolargl": [{"type": "scatterpolargl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "bar": [{"error_x": {"color": "#2a3f5f"}, "error_y": {"color": "#2a3f5f"}, "marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "bar"}], "scattergeo": [{"type": "scattergeo", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterpolar": [{"type": "scatterpolar", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "histogram": [{"marker": {"pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "histogram"}], "scattergl": [{"type": "scattergl", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatter3d": [{"type": "scatter3d", "line": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattermapbox": [{"type": "scattermapbox", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scatterternary": [{"type": "scatterternary", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "scattercarpet": [{"type": "scattercarpet", "marker": {"colorbar": {"outlinewidth": 0, "ticks": ""}}}], "carpet": [{"aaxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "baxis": {"endlinecolor": "#2a3f5f", "gridcolor": "white", "linecolor": "white", "minorgridcolor": "white", "startlinecolor": "#2a3f5f"}, "type": "carpet"}], "table": [{"cells": {"fill": {"color": "#EBF0F8"}, "line": {"color": "white"}}, "header": {"fill": {"color": "#C8D4E3"}, "line": {"color": "white"}}, "type": "table"}], "barpolar": [{"marker": {"line": {"color": "#E5ECF6", "width": 0.5}, "pattern": {"fillmode": "overlay", "size": 10, "solidity": 0.2}}, "type": "barpolar"}], "pie": [{"automargin": true, "type": "pie"}]}, "layout": {"autotypenumbers": "strict", "colorway": ["#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A", "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"], "font": {"color": "#2a3f5f"}, "hovermode": "closest", "hoverlabel": {"align": "left"}, "paper_bgcolor": "white", "plot_bgcolor": "#E5ECF6", "polar": {"bgcolor": "#E5ECF6", "angularaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "radialaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "ternary": {"bgcolor": "#E5ECF6", "aaxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "baxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}, "caxis": {"gridcolor": "white", "linecolor": "white", "ticks": ""}}, "coloraxis": {"colorbar": {"outlinewidth": 0, "ticks": ""}}, "colorscale": {"sequential": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "sequentialminus": [[0.0, "#0d0887"], [0.1111111111111111, "#46039f"], [0.2222222222222222, "#7201a8"], [0.3333333333333333, "#9c179e"], [0.4444444444444444, "#bd3786"], [0.5555555555555556, "#d8576b"], [0.6666666666666666, "#ed7953"], [0.7777777777777778, "#fb9f3a"], [0.8888888888888888, "#fdca26"], [1.0, "#f0f921"]], "diverging": [[0, "#8e0152"], [0.1, "#c51b7d"], [0.2, "#de77ae"], [0.3, "#f1b6da"], [0.4, "#fde0ef"], [0.5, "#f7f7f7"], [0.6, "#e6f5d0"], [0.7, "#b8e186"], [0.8, "#7fbc41"], [0.9, "#4d9221"], [1, "#276419"]]}, "xaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "yaxis": {"gridcolor": "white", "linecolor": "white", "ticks": "", "title": {"standoff": 15}, "zerolinecolor": "white", "automargin": true, "zerolinewidth": 2}, "scene": {"xaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "yaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}, "zaxis": {"backgroundcolor": "#E5ECF6", "gridcolor": "white", "linecolor": "white", "showbackground": true, "ticks": "", "zerolinecolor": "white", "gridwidth": 2}}, "shapedefaults": {"line": {"color": "#2a3f5f"}}, "annotationdefaults": {"arrowcolor": "#2a3f5f", "arrowhead": 0, "arrowwidth": 1}, "geo": {"bgcolor": "white", "landcolor": "#E5ECF6", "subunitcolor": "white", "showland": true, "showlakes": true, "lakecolor": "white"}, "title": {"x": 0.05}, "mapbox": {"style": "light"}}}, "annotations": [{"font": {"color": "#888", "size": 14}, "showarrow": false, "text": "Datos de curvas no disponibles para esta finca", "x": 0.5, "xref": "paper", "y": 0.5, "yref": "paper"}], "height": 350, "paper_bgcolor": "white", "plot_bgcolor": "#fafafa"}};
+  if (curvas_data) Plotly.newPlot("chart-curvas", curvas_data.data, curvas_data.layout, {responsive:true});
+}
+
+// Si ya estaba desbloqueado
+if (sessionStorage.getItem(FINCA_KEY) === "1") { renderCharts(); }
+</script>
+</body>
+</html>
